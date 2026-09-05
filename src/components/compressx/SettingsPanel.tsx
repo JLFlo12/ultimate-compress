@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 interface SettingsPanelProps {
   settings: CompressionSettings;
   onChange: (next: CompressionSettings) => void;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 }
 
 const MODE_HINTS: Record<CompressionMode, string> = {
@@ -25,7 +25,7 @@ const MODE_HINTS: Record<CompressionMode, string> = {
   lossless: "Aucune perte : pixels et données conservés à l'identique.",
 };
 
-export function SettingsPanel({ settings, onChange, disabled }: SettingsPanelProps) {
+export function SettingsPanel({ settings, onChange, disabled = false }: SettingsPanelProps) {
   const set = <K extends keyof CompressionSettings>(key: K, value: CompressionSettings[K]) =>
     onChange({ ...settings, [key]: value });
 
