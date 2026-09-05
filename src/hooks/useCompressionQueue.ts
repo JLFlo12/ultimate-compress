@@ -274,7 +274,7 @@ export function useCompressionQueue() {
     const done = jobsRef.current.filter((job) => job.status === "done" && job.resultUrl);
     if (done.length === 0) return;
     if (done.length === 1) {
-      downloadJob(done[0]);
+      downloadJob(done[0]!);
       return;
     }
 

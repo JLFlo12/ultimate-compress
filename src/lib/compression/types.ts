@@ -65,11 +65,11 @@ export interface CompressionOutcome {
   /** Algorithm actually used, e.g. "WebP q82" or "Gzip niveau 9". */
   method: string;
   /** Human explanation shown in the UI (fallbacks, already-optimized, ...). */
-  note?: string;
+  note?: string | undefined;
   /** True when no meaningful gain was possible and the original was kept. */
   alreadyOptimized: boolean;
-  width?: number;
-  height?: number;
+  width?: number | undefined;
+  height?: number | undefined;
 }
 
 export interface CompressionResult extends CompressionOutcome {
@@ -98,16 +98,16 @@ export interface Job {
   rate: number;
   /** Seconds remaining, live. */
   eta: number;
-  finalSize?: number;
-  outcome?: CompressionOutcome;
-  resultUrl?: string;
-  resultName?: string;
-  error?: string;
+  finalSize?: number | undefined;
+  outcome?: CompressionOutcome | undefined;
+  resultUrl?: string | undefined;
+  resultName?: string | undefined;
+  error?: string | undefined;
   settings: CompressionSettings;
   /** Data URL preview for images (small files only). */
-  previewUrl?: string;
-  startedAt?: number;
-  finishedAt?: number;
+  previewUrl?: string | undefined;
+  startedAt?: number | undefined;
+  finishedAt?: number | undefined;
 }
 
 /* ---------- Worker message protocol ---------- */
