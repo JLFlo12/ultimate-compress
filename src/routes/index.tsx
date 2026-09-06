@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, Play, ShieldCheck, Sparkles, Trash2, XCircle, Zap } from "lucide-react";
+import { Download, Play, ShieldCheck, Sparkles, Trash2, XCircle } from "lucide-react";
 
+import logo from "@/assets/logo.png";
 import { Dropzone } from "@/components/compressx/Dropzone";
 import { JobCard } from "@/components/compressx/JobCard";
 import { SettingsPanel } from "@/components/compressx/SettingsPanel";
@@ -46,9 +47,13 @@ function Index() {
       <div className="relative mx-auto max-w-6xl px-5 pb-24 pt-8 sm:px-8">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="bg-gradient-brand flex size-9 items-center justify-center rounded-xl text-primary-foreground">
-              <Zap className="size-4" />
-            </span>
+            <img
+              src={logo}
+              alt="Logo CompressX"
+              width={1024}
+              height={1024}
+              className="size-9"
+            />
             <span className="font-display text-lg font-semibold tracking-tight">CompressX</span>
           </div>
           <div className="flex items-center gap-3">
