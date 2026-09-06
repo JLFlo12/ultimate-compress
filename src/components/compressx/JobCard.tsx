@@ -88,7 +88,7 @@ export function JobCard({ job, onDownload, onRemove, onRetry }: JobCardProps) {
                       : "bg-accent/20 text-accent-foreground",
                   )}
                 >
-                  −{formatPercent(saved, 0)}
+                  −{formatPercent(saved, saved >= 99.5 && saved < 100 ? 1 : 0)}
                 </span>
               )}
               {done && (
