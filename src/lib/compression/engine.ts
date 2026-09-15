@@ -13,6 +13,7 @@ import { Gzip } from "fflate";
 
 import { baseName, fileExtension, sanitizeFileName } from "../format";
 import { canDecodeAsBitmap, isAlreadyCompressed, levelForMode, qualityForMode } from "./detect";
+import { canDecodeGifFrames, isAnimatedGif, reencodeGif } from "./gif";
 import type { CompressionResult, CompressionSettings, FileCategory, JobStatus } from "./types";
 
 const CHUNK_SIZE = 4 * 1024 * 1024; // 4 MB streaming window
@@ -175,6 +176,53 @@ async function compressImage(
   }
 
   const lossless = settings.mode === "lossless";
+
+  // Animated GIF: decode every frame and re-encode a real animated GIF.
+  if (ext === "gif" && !lossless && (await isAnimatedGif(file))) {
+    if (!canDecodeGifFrames()) {
+      return archiveLossless(file, settings, onProgress, {
+        note: "Ce navigateur ne peut pas décoder les images animées : archive sans perte appliquée.",
+      });
+    }
+    try {
+      const out = await reencodeGif(
+        file,
+        {
+          mode: settings.mode,
+          quality: qualityForMode(settings),
+          maxDimension: settings.maxDimension,
+        },
+        (done, total) =>
+          onProgress(Math.round((done / Math.max(1, total)) * file.size), file.size, "compressing"),
+      );
+      onProgress(file.size, file.size, "compressing");
+      if (out.blob.size >= file.size) {
+        return {
+          blob: file,
+          fileName: sanitizeFileName(file.name),
+          method: "Aucun gain possible",
+          note: "Ce GIF animé est déjà optimisé : le fichier original est conservé.",
+          alreadyOptimized: true,
+        };
+      }
+      return {
+        blob: out.blob,
+        fileName: `${baseName(sanitizeFileName(file.name))}.gif`,
+        method: `GIF ${out.colors} couleurs · ${out.frames} images${
+          out.width !== 0 ? ` · ${out.width}×${out.height}` : ""
+        }`,
+        note: "Animation conservée : palette réduite et images ré-encodées.",
+        alreadyOptimized: false,
+        width: out.width,
+        height: out.height,
+      };
+    } catch {
+      return archiveLossless(file, settings, onProgress, {
+        note: "Ré-encodage de l'animation impossible : archive sans perte appliquée.",
+      });
+    }
+  }
+
   const decodable =
     canDecodeAsBitmap(file.name, file.type) &&
     typeof createImageBitmap === "function" &&
