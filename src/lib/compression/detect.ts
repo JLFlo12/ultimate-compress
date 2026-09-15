@@ -134,6 +134,7 @@ export function describePlan(
 
   if (category === "image") {
     if (ext === "svg") return "SVG → nettoyage + Gzip";
+    if (ext === "gif" && !lossless) return "GIF animé → palette réduite";
     if (lossless || !canDecodeAsBitmap(fileName, "")) return "Archive sans perte (Gzip)";
     const target =
       settings.imageFormat === "auto"
